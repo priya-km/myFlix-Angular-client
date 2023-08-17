@@ -4,33 +4,34 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-//Declaring the api url that will provide data for the client app
 const apiUrl = 'https://myflix-pkm.herokuapp.com/';
+
 @Injectable({
   providedIn: 'root'
 })
-export class UserRegistrationService {
-  // Inject the HttpClient module to the constructor params
- // This will provide HttpClient to the entire class, making it available via this.http
-  constructor(private http: HttpClient) {
-  }
- // Making the api call for the user registration endpoint
+export class FetchApiDataService {
+  constructor(private http: HttpClient) { }
+  
+  // user registration api call
+
   public userRegistration(userDetails: any): Observable<any> {
     console.log(userDetails);
-    return this.http.post(apiUrl + 'users', userDetails).pipe( // this.http posts to the api ep , (in react apiUrl/${users} ) and returns apis response
-    catchError(this.handleError) // pipe combines multiple functions into one 
+    return this.http.post(apiUrl + 'users', userDetails).pipe(
+    catchError(this.handleError)
     );
   }
 
-  // Making the api call for the user login endpoint
-  public userLogin(userDetails: any): Observable<any> {
-    console.log(userDetails);
-    return this.http.post(apiUrl + 'login?' + new URLSearchParams(userDetails), {}).pipe(
-      catchError(this.handleError)
-    );
-  }
 
-  // Get all movies
+  // user login api call
+
+public userLogin(userDetails: any): Observable<any> {
+  console.log(userDetails);
+  return this.http.post(apiUrl + 'login', userDetails).pipe(
+    catchError(this.handleError)
+  );
+}
+
+
   getAllMovies(): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.get(apiUrl + 'movies', {
@@ -43,10 +44,9 @@ export class UserRegistrationService {
     );
   }
 
-  // Get one movie
-  getOneMovie(title: string): Observable<any> {
+  getOneMovie(Title: string): Observable<any> {
     const token = localStorage.getItem('token');
-    return this.http.get(apiUrl + 'movies/' + title, {
+    return this.http.get(apiUrl + 'movies/' + Title, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + token,
       })
@@ -56,10 +56,9 @@ export class UserRegistrationService {
     );
   }
 
-  // Get one director
   getOneDirector(directorName: string): Observable<any> {
     const token = localStorage.getItem('token');
-    return this.http.get(apiUrl + 'movies/director/' + directorName, {
+    return this.http.get(apiUrl + 'movies/Director/' + directorName, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + token,
       })
@@ -69,10 +68,9 @@ export class UserRegistrationService {
     );
   }
 
-  // Get one genre
   getOneGenre(genreName: string): Observable<any> {
     const token = localStorage.getItem('token');
-    return this.http.get(apiUrl + 'movies/genre/' + genreName, {
+    return this.http.get(apiUrl + 'movies/Genre/' + genreName, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + token,
       })
@@ -83,26 +81,22 @@ export class UserRegistrationService {
   }
 
   // Get one user endpoint
-  getOneUser(username: string): Observable<any> {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    return user;
-    const name = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    return this.http.get(apiUrl + 'users/' + user, {
-    headers: new HttpHeaders(
-         {
-           Authorization: 'Bearer ' + token,
-         })
-     }).pipe(
-       map(this.extractResponseData),
-       catchError(this.handleError)
-     );
+  getOneUser(Username: string): Observable<any> {
+   const token = localStorage.getItem('token');
+    return this.http.get(apiUrl + 'users/' + Username, {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + token,
+      })
+    }).pipe(
+      map(this.extractResponseData),
+      catchError(this.handleError)
+    );
   }
 
   // Get favorites list
-  getFavoriteMovies(username: string): Observable<any> {
+  getFavoriteMovies(Username: string): Observable<any> {
     const token = localStorage.getItem('token');
-    return this.http.get(apiUrl + 'users' + username, {
+    return this.http.get(apiUrl + 'users/' + Username, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + token,
       })
@@ -114,10 +108,10 @@ export class UserRegistrationService {
   }
 
   // Add a movie to favorites
-  addFavoriteMovie(movieId: string, username: string): Observable<any> {
+  addFavoriteMovie(movieID: string, Username: string): Observable<any> {
     const token = localStorage.getItem('token');
 
-    return this.http.post(apiUrl + `users/${username}/movies/${movieId}`, {}, {
+    return this.http.post(apiUrl + 'users/' + Username + '/movies/' + movieID, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + token,
       })
@@ -127,10 +121,10 @@ export class UserRegistrationService {
     );
   }
 
-  isFavoriteMovie(movieId: string, username: string): Observable<any> {
+  isFavoriteMovie(movieID: string, Username: string): Observable<any> {
     const token = localStorage.getItem('token');
 
-    return this.http.delete(apiUrl + `users/${username}/movies/${movieId}`, {
+    return this.http.delete(apiUrl + 'users/' + Username + '/movies/' + movieID, {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + token,
       })
@@ -182,21 +176,22 @@ export class UserRegistrationService {
   }
 
    
-  private extractResponseData(res: any): any {
+   private extractResponseData(res: any): any {
     const body = res;
     return body || {};
   }
 
-
-private handleError(error: HttpErrorResponse): any {
+  private handleError(error: HttpErrorResponse): any {
     if (error.error instanceof ErrorEvent) {
-    console.error('Some error occurred:', error.error.message);
+      console.error('Some error occurred:', error.error.message);
     } else {
-    console.error(
+      console.error(
         `Error Status code ${error.status}, ` +
-        `Error body is: ${error.error}`);
+        `Error body is: ${error.error}`
+      );
     }
     return throwError(
-    'Something bad happened; please try again later.');
+      'Something bad happened; please try again later.'
+    );
   }
 }
