@@ -42,6 +42,8 @@ registerUser(): void {
         duration: 2000
       });
     });
-  }
+}
+  
+  
 
   }

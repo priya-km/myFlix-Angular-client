@@ -3,6 +3,8 @@ import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
+
 
 const apiUrl = 'https://myflix-pkm.herokuapp.com/';
 
@@ -14,12 +16,16 @@ export class FetchApiDataService {
   
   // user registration api call
 
-  public userRegistration(userDetails: any): Observable<any> {
-    console.log(userDetails);
-    return this.http.post(apiUrl + 'users', userDetails).pipe(
+public userRegistration(userDetails: any): Observable<any> {
+  console.log(userDetails);
+  return this.http.post(apiUrl + 'users', userDetails).pipe(
+    tap((response: any) => {
+      localStorage.setItem('user', JSON.stringify(response.user)); // Assuming the response contains the user object
+      localStorage.setItem('token', response.token); // Assuming the response contains the token
+    }),
     catchError(this.handleError)
-    );
-  }
+  );
+}
 
 
   // user login api call
@@ -27,6 +33,10 @@ export class FetchApiDataService {
 public userLogin(userDetails: any): Observable<any> {
   console.log(userDetails);
   return this.http.post(apiUrl + 'login', userDetails).pipe(
+    tap((response: any) => {
+      localStorage.setItem('user', JSON.stringify(response.user)); // Assuming the response contains the user object
+      localStorage.setItem('token', response.token); // Assuming the response contains the token
+    }),
     catchError(this.handleError)
   );
 }
@@ -81,12 +91,14 @@ public userLogin(userDetails: any): Observable<any> {
   }
 
   // Get one user endpoint
-  getOneUser(Username: string): Observable<any> {
-   const token = localStorage.getItem('token');
-    return this.http.get(apiUrl + 'users/' + Username, {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + token,
-      })
+   getOneUser(): Observable<any> {
+    const username = localStorage.getItem('Username');
+    const token = localStorage.getItem('token');
+    return this.http.get(apiUrl + 'users/' + username, {
+      headers: new HttpHeaders(
+        {
+          Authorization: 'Bearer ' + token,
+        })
     }).pipe(
       map(this.extractResponseData),
       catchError(this.handleError)
@@ -108,32 +120,34 @@ public userLogin(userDetails: any): Observable<any> {
   }
 
   // Add a movie to favorites
-  addFavoriteMovie(movieID: string, Username: string): Observable<any> {
-    const token = localStorage.getItem('token');
+addFavoriteMovie(movieID: string): Observable<any> {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    return this.http.post(apiUrl + 'users/' + Username + '/movies/' + movieID, {
-      headers: new HttpHeaders({
+  console.log('Before:', user.FavoriteMovies);
+  
+  user.FavoriteMovies.push(movieID); // Update the FavoriteMovies array
+
+  console.log('After:', user.FavoriteMovies);
+  
+  localStorage.setItem('user', JSON.stringify(user)); // Update the user object in localStorage
+
+  return this.http.post(apiUrl + 'users/' + user.Username + '/movies/' + movieID, {}, {
+    headers: new HttpHeaders(
+      {
         Authorization: 'Bearer ' + token,
       })
-    }).pipe(
-      map(this.extractResponseData),
-      catchError(this.handleError)
-    );
+  }).pipe(
+    map(this.extractResponseData),
+    catchError(this.handleError)
+  );
+}
+
+/*   isFavoriteMovie(movieID: string): boolean {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user.FavoriteMovies.indexOf(movieID) >= 0;
   }
-
-  isFavoriteMovie(movieID: string, Username: string): Observable<any> {
-    const token = localStorage.getItem('token');
-
-    return this.http.delete(apiUrl + 'users/' + Username + '/movies/' + movieID, {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + token,
-      })
-    }).pipe(
-      map(this.extractResponseData),
-      catchError(this.handleError)
-    );
-  }
-
+ */
   // Update user info
   editUser(updatedUser: any): Observable<any> {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -162,18 +176,29 @@ public userLogin(userDetails: any): Observable<any> {
   }
 
   // Remove movie from favorites
-  deleteFavoriteMovie(movieId: string, username: string): Observable<any> {
-    const token = localStorage.getItem('token');
+deleteFavoriteMovie(movieID: string): Observable<any> {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    return this.http.delete(apiUrl + 'users/' + username + '/movies/' + movieId, {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + token,
-      })
-    }).pipe(
-      map(this.extractResponseData),
-      catchError(this.handleError)
-    );
+  const index = user.FavoriteMovies.indexOf(movieID);
+  if (index > -1) {
+    user.FavoriteMovies.splice(index, 1); // Remove the movie ID from the array
   }
+
+  localStorage.setItem('user', JSON.stringify(user)); // Update the user object in localStorage
+
+  return this.http.delete(apiUrl + 'users/' + user.Username + '/movies/' + movieID, {
+    headers: new HttpHeaders(
+      {
+        Authorization: 'Bearer ' + token,
+      }),
+    responseType: "text"
+  }).pipe(
+    map(this.extractResponseData),
+    catchError(this.handleError)
+  );
+}
+
 
    
    private extractResponseData(res: any): any {
@@ -183,15 +208,17 @@ public userLogin(userDetails: any): Observable<any> {
 
   private handleError(error: HttpErrorResponse): any {
     if (error.error instanceof ErrorEvent) {
+      console.log(error);
+      console.log(error.error);
       console.error('Some error occurred:', error.error.message);
     } else {
+      console.log(error);
+      console.log(error.error);
       console.error(
         `Error Status code ${error.status}, ` +
-        `Error body is: ${error.error}`
-      );
+        `Error body is: ${error.error}`);
     }
-    return throwError(
-      'Something bad happened; please try again later.'
-    );
+    return throwError(() =>
+      new Error('Something bad happened; please try again later.'));
   }
 }
