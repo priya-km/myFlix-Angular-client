@@ -92,7 +92,7 @@ public userLogin(userDetails: any): Observable<any> {
 
   // Get one user endpoint
    getOneUser(): Observable<any> {
-    const username = localStorage.getItem('Username');
+    const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
     return this.http.get(apiUrl + 'users/' + username, {
       headers: new HttpHeaders(
