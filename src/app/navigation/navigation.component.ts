@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { FetchApiDataService } from '../fetch-api-data.service';
 
 @Component({
   selector: 'app-navigation',
@@ -7,8 +8,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent {
-
-  constructor(private router: Router) { }
+  constructor(
+    public fetchApiData: FetchApiDataService,
+    public router: Router
+  ) { }
 
   ngOnInit(): void { }
 
