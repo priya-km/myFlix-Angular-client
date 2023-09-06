@@ -42,7 +42,7 @@ registerUser(): void {
      });
          // log user in and navigate to movies
       this.fetchApiData.userLogin(this.userData).subscribe((result) => {
-        localStorage.setItem('user', JSON.stringify(result.user));
+        localStorage.setItem('username', result.user.Username);
         localStorage.setItem('token', result.token);
         this.router.navigate(['movies']);
       })
