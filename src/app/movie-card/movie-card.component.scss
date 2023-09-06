@@ -5,16 +5,14 @@
   margin: .5rem auto;
   padding: 2rem;
   row-gap: 1.65em;
-  color:black !important;
-  font-weight: bold; 
 }
 
 .movie-card {
-  margin-top: 5px;
-  width: 50vw;
+  margin-top: 10px;
+  width: 30vw;
   justify-self: center;
   justify-content: center;
-  padding: 5px;
+  padding: 10px;
 }
 
 .mat-mdc-card-header {
@@ -22,7 +20,7 @@
 }
 
 .movie-card > img {
-  height: 80%;
+  height: 70%;
 }
 
 .mdc-card__actions {

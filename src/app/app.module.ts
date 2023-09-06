@@ -26,7 +26,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GenreComponent } from './genre/genre.component';
 import { DirectorComponent } from './director/director.component';
-
+// import { UserFavoriteMoviesComponent } from './user-favorite-movies/user-favorite-movies.component';
 
 const appRoutes: Routes = [
   { path: 'welcome', component: WelcomePageComponent },

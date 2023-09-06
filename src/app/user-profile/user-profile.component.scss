@@ -4,7 +4,6 @@
     justify-content: space-around;
 }
 
-
 .item-a .item-b {
     grid-area: line1;
 
@@ -20,18 +19,7 @@
 
 .item-f .item-g {
     grid-area: line4;
-    
 }
-
-.mat-mdc-list-item-title {
-    color: white !important;
-}
-
-.mat-warn {
-    background-color: #800020;
-    color: white !important;
-}
-
 
 form {
     display: grid;
@@ -40,15 +28,9 @@ form {
     grid-template-areas:
         "line1"
         "line2"
-        "line3"
-        "line4"
-        "line5";
-        gap:20px;
-    
-}
-
-.mat-list-item{
-    color: white !important;
+        "line3 "
+        "line4 "
+    ;
 }
 
 
