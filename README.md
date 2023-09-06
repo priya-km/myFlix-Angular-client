@@ -2,7 +2,7 @@
 
 ![movies](https://github.com/priya-km/myFlix-Angular-client/assets/118628757/2b01c49c-d6e9-4ce9-be2c-d3ff1336e055)
 
-**[Click here to visit the myFlix Angular web application](https://priya-km.github.io/myFlix-Angular-client/welcome "myFlix Angular client link")**
+**[Click here to visit the myFlix Angular web application](https://priya-km.github.io/myFlix-Angular-client/welcome "myFlix Angular client link"){:target="_blank" rel="noopener"}**
 
 
 ## What is myFlix?
