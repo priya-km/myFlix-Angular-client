@@ -40,13 +40,6 @@ registerUser(): void {
      this.snackBar.open('User registered successfully!', 'OK', {
         duration: 2000
      });
-         // log user in and navigate to movies
-      this.fetchApiData.userLogin(this.userData).subscribe((result) => {
-        localStorage.setItem('user', JSON.stringify(result.user));
-        localStorage.setItem('token', result.token);
-        this.router.navigate(['movies']);
-      })
-      
     }, (response) => {
       console.log(response)
       this.snackBar.open(response, 'OK', {
