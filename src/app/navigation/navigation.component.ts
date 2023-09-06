@@ -15,6 +15,8 @@ export class NavigationComponent {
 
   ngOnInit(): void { }
 
+  // Navigation bar links
+
   toMovies(): void {
     this.router.navigate(['movies']);
   }

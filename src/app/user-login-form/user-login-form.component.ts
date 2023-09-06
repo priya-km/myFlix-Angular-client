@@ -9,6 +9,7 @@ import { FetchApiDataService } from '../fetch-api-data.service';
 // This import is used to display notifications back to the user
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+// This import allows the user to be routed to the movies page upon logging in
 import { Router } from '@angular/router';
 
 @Component({
@@ -30,10 +31,14 @@ export class UserLoginFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  // This is the function responsible for sending the form inputs to the backend
+  /**
+   * form input is sent to the backend
+   * once logged in, username and token will be stored in localstorage.
+   * user will be rerouted to the movies page upon login
+   */
   loginUser(): void {
     this.fetchApiData.userLogin(this.loginData).subscribe((result) => {
-      // Logic for a successful user login goes here!
+      // Logic for a successful user login
       console.log(result);
       localStorage.setItem('username', result.user.Username);
       localStorage.setItem('token', result.token);

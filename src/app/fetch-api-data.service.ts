@@ -5,7 +5,9 @@ import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { tap } from 'rxjs/operators';
 
-
+/**
+ * The url for the api that provides data for the app
+ */
 const apiUrl = 'https://myflix-pkm.herokuapp.com/';
 
 @Injectable({
@@ -14,8 +16,11 @@ const apiUrl = 'https://myflix-pkm.herokuapp.com/';
 export class FetchApiDataService {
   constructor(private http: HttpClient) { }
   
-  // user registration api call
-
+  /** 
+   * User registration api call
+   * @param userDetails
+   * @returns an observable with the created user 
+   */
 public userRegistration(userDetails: any): Observable<any> {
   console.log(userDetails);
   return this.http.post(apiUrl + 'users', userDetails).pipe(
@@ -28,7 +33,12 @@ public userRegistration(userDetails: any): Observable<any> {
 }
 
 
-  // user login api call
+  /** 
+   * User login api call
+   * Checks if the username and password are correct and provides a token
+   * @param userDetails with users username and password
+   * @returns users info and token
+   */
 
 public userLogin(userDetails: any): Observable<any> {
   console.log(userDetails);
@@ -41,7 +51,10 @@ public userLogin(userDetails: any): Observable<any> {
   );
 }
 
-
+  /**
+   * Get all movies from api
+   * @returns array of all movies
+   */
   getAllMovies(): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.get(apiUrl + 'movies', {
@@ -54,6 +67,11 @@ public userLogin(userDetails: any): Observable<any> {
     );
   }
 
+  /**
+   * Gets info for one movie from the api
+   * @param Title of movie
+   * @returns movie information
+   */
   getOneMovie(Title: string): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.get(apiUrl + 'movies/' + Title, {
@@ -65,6 +83,12 @@ public userLogin(userDetails: any): Observable<any> {
       catchError(this.handleError)
     );
   }
+
+  /**
+   * Gets info for one director from the api
+   * @param directorName 
+   * @returns director information
+   */
 
   getOneDirector(directorName: string): Observable<any> {
     const token = localStorage.getItem('token');
@@ -78,6 +102,12 @@ public userLogin(userDetails: any): Observable<any> {
     );
   }
 
+  /**
+   * Gets information from one genre from api
+   * @param genreName 
+   * @returns genre info
+   */
+
   getOneGenre(genreName: string): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.get(apiUrl + 'movies/Genre/' + genreName, {
@@ -90,7 +120,10 @@ public userLogin(userDetails: any): Observable<any> {
     );
   }
 
-  // Get one user endpoint
+  /**
+   * Get the info for one user from the api
+   * @returns user info
+   */
    getOneUser(): Observable<any> {
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
@@ -105,7 +138,11 @@ public userLogin(userDetails: any): Observable<any> {
     );
   }
 
-  // Get favorites list
+  /**
+   * Get users favorite movies list from api
+   * @param Username 
+   * @returns users favorite movies list
+   */
   getFavoriteMovies(Username: string): Observable<any> {
     const token = localStorage.getItem('token');
     return this.http.get(apiUrl + 'users/' + Username, {
@@ -119,7 +156,11 @@ public userLogin(userDetails: any): Observable<any> {
     );
   }
 
-  // Add a movie to favorites
+  /**
+   * Add a movie to users favorite movies list
+   * @param movieID 
+   * @returns updated favorite movies list
+   */
 addFavoriteMovie(movieID: string): Observable<any> {
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -148,7 +189,12 @@ addFavoriteMovie(movieID: string): Observable<any> {
     return user.FavoriteMovies.indexOf(movieID) >= 0;
   }
  */
-  // Update user info
+  
+  /**
+   * Updates/edits users info
+   * @param updatedUser new information for user
+   * @returns Updated user info
+   */
   editUser(updatedUser: any): Observable<any> {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const token = localStorage.getItem('token');
@@ -162,7 +208,10 @@ addFavoriteMovie(movieID: string): Observable<any> {
     );
   }
 
-  // Delete user
+  /**
+   * Delete user and their information from the database by username
+   * @returns user goes back to welcome screen
+   */
   deleteUser(): Observable<any> {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const token = localStorage.getItem('token');
@@ -175,7 +224,11 @@ addFavoriteMovie(movieID: string): Observable<any> {
     );
   }
 
-  // Remove movie from favorites
+  /**
+   * Remove a movie from users favorite movies list
+   * @param movieID 
+   * @returns updated favorite movies list
+   */
 deleteFavoriteMovie(movieID: string): Observable<any> {
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');

@@ -31,8 +31,14 @@ export class UserProfileComponent implements OnInit {
     this.getUser();
   }
 
+/**
+ * Username and token will be taken from localstorage to send a request to the api for the users information
+ * User profile page will then be able to display the users favorite movies list and their username, name, email, etc.
+ */
 
-
+/**
+ * Gets the users info to display or change
+ * */
   getUser(): void {
     this.fetchApiData.getOneUser().subscribe((response: any) => {
       this.user = response;
@@ -47,6 +53,10 @@ export class UserProfileComponent implements OnInit {
     })
   }
 
+
+/** 
+ * Logic for updating user info
+ * */
   editUser(): void {
     this.fetchApiData.editUser(this.userData).subscribe((data) => {
       localStorage.setItem('user', JSON.stringify(data));
@@ -63,6 +73,10 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+
+/** 
+ * Deleting user 
+ * */
   deleteUser(): void {
     if (confirm('are you sure?')) {
       this.router.navigate(['welcome']).then(() => {
